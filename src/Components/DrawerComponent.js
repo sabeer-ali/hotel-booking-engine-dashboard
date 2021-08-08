@@ -23,6 +23,8 @@ import Collapse from "@material-ui/core/Collapse";
 import MeetingRoomTwoToneIcon from "@material-ui/icons/MeetingRoomTwoTone";
 import HomeWorkIcon from "@material-ui/icons/HomeWork";
 import HouseIcon from "@material-ui/icons/House";
+import TrendingUpIcon from "@material-ui/icons/TrendingUp";
+import EuroSymbolIcon from "@material-ui/icons/EuroSymbol";
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import {
@@ -32,7 +34,7 @@ import {
   TextRotateUp,
 } from "@material-ui/icons";
 
-import { HotelsRoomTypes } from "../Pages";
+import { HotelsRoomTypes, HotelRoom, RatePage, CurrenciesPage } from "../Pages";
 
 const drawerWidth = 240;
 
@@ -198,10 +200,22 @@ export default function MiniDrawer() {
       ],
     },
     {
-      name: "Hotel Room",
+      name: "Rates",
       icon: () => <HotelIcon />,
-      haveChild: false,
-      link: "/rooms",
+      isExpand: false,
+      haveChild: true,
+      section: [
+        {
+          name: "Rate List",
+          link: "/rates/rateList",
+          icon: () => <TrendingUpIcon />,
+        },
+        {
+          name: "Currencies",
+          link: "/rates/currencies",
+          icon: () => <EuroSymbolIcon />,
+        },
+      ],
     },
   ]);
 
@@ -312,10 +326,6 @@ export default function MiniDrawer() {
                       </List>
                     ))
                   : null}
-                {/* ListItem button key={text.name} component={Link} to={text.link}>
-               <ListItemIcon>{text.icon ? <text.icon /> : null}</ListItemIcon>
-               <ListItemText primary={text.name} />
-            </ListItem> */}
               </Collapse>
             </>
           ))}
@@ -337,7 +347,13 @@ export default function MiniDrawer() {
             <HotelsRoomTypes />
           </Route>
           <Route path="/hotels/room">
-            <Rooms />
+            <HotelRoom />
+          </Route>
+          <Route path="/rates/rateList">
+            <RatePage />
+          </Route>
+          <Route path="/rates/currencies">
+            <CurrenciesPage />
           </Route>
         </Switch>
       </main>
