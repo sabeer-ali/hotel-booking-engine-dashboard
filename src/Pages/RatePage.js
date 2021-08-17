@@ -2,7 +2,15 @@ import React from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
-import { TableBody, Button } from "@material-ui/core";
+import {
+  TableBody,
+  Button,
+  Switch,
+  Typography,
+  Divider,
+  TextField,
+  ButtonGroup,
+} from "@material-ui/core";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
@@ -12,11 +20,27 @@ import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import EditIcon from "@material-ui/icons/Edit";
 import KeyboardBackspaceIcon from "@material-ui/icons/KeyboardBackspace";
 
-const useStyles = makeStyles({
+import InputLabel from "@material-ui/core/InputLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+
+const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
   },
-});
+  rateAddListContainer: {
+    margin: "20px 0",
+    padding: 20,
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 function createData(id, currency) {
   return { id, currency };
@@ -66,8 +90,252 @@ const RateListComponent = () => {
 };
 
 const RateAddComponent = () => {
-  return <div>002</div>;
+  const classes = useStyles();
+  const [form, setForm] = React.useState({ isActive: false, promo: false });
+  const handleForm = (field, value) => {
+    console.log("value", typeof value);
+    let local = { ...form };
+    local[`${field}`] =
+      typeof value !== "boolean" ? value : value === true ? false : true;
+    setForm(local);
+  };
+
+  const [state, setState] = React.useState({
+    age: "",
+    age1: "",
+    name: "hai",
+  });
+
+  const handleChange = (event) => {
+    const name = event.target.name;
+    setState({
+      ...state,
+      [name]: event.target.value,
+    });
+  };
+
+  const handleChange1 = (event) => {
+    const name = event.target.name;
+    setState({
+      ...state,
+      [name]: event.target.value,
+    });
+  };
+
+  return (
+    <div className="row b p-2 d-flex justify-content-center ">
+      <div className="col-7 ">
+        <Paper className={classes.rateAddListContainer}>
+          <Typography>SETTINGS</Typography>
+          <Divider />
+          <div className="row my-2 d-flex align-items-center">
+            <div className="col">
+              <Typography>Active</Typography>
+            </div>
+            <div className="col">
+              <Switch
+                checked={form.isActive}
+                onChange={() => handleForm("isActive", form.isActive)}
+                color="primary"
+                name="checkedB"
+                inputProps={{ "aria-label": "primary checkbox" }}
+              />
+            </div>
+          </div>
+          <div className="row my-2">
+            <div className="row my-2 d-flex align-items-center">
+              <div className="col">
+                <Typography>Public name *</Typography>
+              </div>
+              <div className="col">
+                <TextField id="standard-basic" />
+              </div>
+            </div>
+          </div>
+          <div className="row my-2">
+            <div className="row my-2 d-flex align-items-center">
+              <div className="col">
+                <Typography>Internal name </Typography>
+              </div>
+              <div className="col">
+                <TextField id="standard-basic" />
+              </div>
+            </div>
+          </div>
+          <div className="row my-2">
+            <div className="row my-2 d-flex align-items-center">
+              <div className="col">
+                <Typography>Default release (minimum lead days) </Typography>
+              </div>
+              <div className="col">
+                <TextField id="standard-basic" />
+              </div>
+            </div>
+          </div>
+          <div className="row my-2">
+            <div className="row my-2 d-flex align-items-center">
+              <div className="col">
+                <Typography>Currency </Typography>
+              </div>
+              <div className="col">
+                <TextField id="standard-basic" />
+              </div>
+            </div>
+          </div>
+          <div className="row my-2">
+            <div className="row my-2 d-flex align-items-center">
+              <div className="col">
+                <Typography>Markets </Typography>
+              </div>
+              <div className="col">
+                <TextField id="standard-basic" />
+              </div>
+            </div>
+          </div>
+          <div className="row my-2">
+            <div className="row my-2 d-flex align-items-center">
+              <div className="col">
+                <Typography>Confidential (with promotional code)</Typography>
+              </div>
+              <div className="col">
+                <Switch
+                  checked={form.promo}
+                  onChange={() => handleForm("promo", form.promo)}
+                  color="primary"
+                  name="checkedB"
+                  inputProps={{ "aria-label": "primary checkbox" }}
+                />
+              </div>
+            </div>
+          </div>
+        </Paper>
+
+        <Paper className={classes.rateAddListContainer}>
+          <Typography>ASSIGN TO ROOMS / OCCUPANCY AND BOARDS</Typography>
+          <Divider />
+          <div className="row my-2">
+            <div className="row my-2 d-flex align-items-center">
+              <div className="col">
+                <Typography>Rooms / occupancy *</Typography>
+              </div>
+              <div className="col">
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="age-native-simple">Age</InputLabel>
+                  <Select
+                    native
+                    value={state.age}
+                    onChange={handleChange}
+                    inputProps={{
+                      name: "age",
+                      id: "age-native-simple",
+                    }}
+                  >
+                    <option aria-label="None" value="" />
+                    <option value={10}>Ten</option>
+                    <option value={20}>Twenty</option>
+                    <option value={30}>Thirty</option>
+                  </Select>
+                </FormControl>
+              </div>
+            </div>
+          </div>
+          <div className="row my-2">
+            <div className="row my-2 d-flex align-items-center">
+              <div className="col">
+                <Typography>Boards </Typography>
+              </div>
+              <div className="col">
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="age-native-simple">Age</InputLabel>
+                  <Select
+                    native
+                    value={state.age1}
+                    onChange={handleChange1}
+                    inputProps={{
+                      name: "age",
+                      id: "age-native-simple",
+                    }}
+                  >
+                    <option aria-label="None" value="" />
+                    <option value={10}>Ten</option>
+                    <option value={20}>Twenty</option>
+                    <option value={30}>Thirty</option>
+                  </Select>
+                </FormControl>
+              </div>
+            </div>
+          </div>
+        </Paper>
+
+        <Paper className={classes.rateAddListContainer}>
+          <Typography>CANCELLATION AND PAYMENT POLICIES</Typography>
+          <Divider />
+          <div className="row my-2">
+            <div className="row my-2 d-flex align-items-center">
+              <div className="col">
+                <Typography>Assigned policies</Typography>
+              </div>
+              <div className="col">
+                <TextField id="standard-basic" />
+              </div>
+            </div>
+          </div>
+          <div className="row my-2">
+            <div className="row my-2 d-flex align-items-center">
+              <div className="col">
+                <Typography>Default policy</Typography>
+              </div>
+              <div className="col">
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="age-native-simple">Age</InputLabel>
+                  <Select
+                    native
+                    value={state.age1}
+                    onChange={handleChange1}
+                    inputProps={{
+                      name: "age",
+                      id: "age-native-simple",
+                    }}
+                  >
+                    <option aria-label="None" value="" />
+                    <option value={10}>Ten</option>
+                    <option value={20}>Twenty</option>
+                    <option value={30}>Thirty</option>
+                  </Select>
+                </FormControl>
+              </div>
+            </div>
+          </div>
+        </Paper>
+
+        <Paper className={classes.rateAddListContainer}>
+          <Typography>OTHER CONFIGURATIONS</Typography>
+          <Divider />
+          <div className="row my-2">
+            <div className="row my-2 d-flex align-items-center">
+              <div className="col">
+                <Typography>
+                  Reference for calculating and minimum / maximum stay
+                </Typography>
+              </div>
+              <div className="col">
+                <ButtonGroup
+                  disableElevation
+                  variant="contained"
+                  color="primary"
+                >
+                  <Button variant="outlined">BY Arrival</Button>
+                  <Button>By Stay</Button>
+                </ButtonGroup>
+              </div>
+            </div>
+          </div>
+        </Paper>
+      </div>
+    </div>
+  );
 };
+
 const RatePage = () => {
   const classes = useStyles();
   const [isAdd, setAdd] = React.useState(false);

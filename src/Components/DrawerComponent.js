@@ -25,6 +25,7 @@ import HomeWorkIcon from "@material-ui/icons/HomeWork";
 import HouseIcon from "@material-ui/icons/House";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import EuroSymbolIcon from "@material-ui/icons/EuroSymbol";
+import EventAvailableIcon from "@material-ui/icons/EventAvailable";
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import {
@@ -34,7 +35,15 @@ import {
   TextRotateUp,
 } from "@material-ui/icons";
 
-import { HotelsRoomTypes, HotelRoom, RatePage, CurrenciesPage } from "../Pages";
+import {
+  HotelsRoomTypes,
+  HotelRoom,
+  RatePage,
+  CurrenciesPage,
+  AvailabilityPage,
+  OffersPage,
+  ExtrasPage,
+} from "../Pages";
 
 const drawerWidth = 240;
 
@@ -217,6 +226,27 @@ export default function MiniDrawer() {
         },
       ],
     },
+    {
+      name: "Availability",
+      icon: () => <EventAvailableIcon />,
+      isExpand: false,
+      haveChild: false,
+      link: "/availability",
+    },
+    {
+      name: "Offers",
+      icon: () => <EventAvailableIcon />,
+      isExpand: false,
+      haveChild: false,
+      link: "/offers",
+    },
+    {
+      name: "Extras",
+      icon: () => <EventAvailableIcon />,
+      isExpand: false,
+      haveChild: false,
+      link: "/extras",
+    },
   ]);
 
   const [open1, setOpen1] = React.useState(true);
@@ -354,6 +384,15 @@ export default function MiniDrawer() {
           </Route>
           <Route path="/rates/currencies">
             <CurrenciesPage />
+          </Route>
+          <Route path="/availability">
+            <AvailabilityPage />
+          </Route>
+          <Route path="/offers">
+            <OffersPage />
+          </Route>
+          <Route path="/extras">
+            <ExtrasPage />
           </Route>
         </Switch>
       </main>
