@@ -26,6 +26,7 @@ import HouseIcon from "@material-ui/icons/House";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import EuroSymbolIcon from "@material-ui/icons/EuroSymbol";
 import EventAvailableIcon from "@material-ui/icons/EventAvailable";
+import SignIn from "../Pages/LoginPage";
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import {
@@ -50,12 +51,6 @@ const drawerWidth = 240;
 const Dashboard = () => {
   return (
     <div>
-      <h3>Dashboard</h3>
-      <h3>Dashboard</h3>
-      <h3>Dashboard</h3>
-      <h3>Dashboard</h3>
-      <h3>Dashboard</h3>
-      <h3>Dashboard</h3>
       <h3>Dashboard</h3>
     </div>
   );
@@ -346,6 +341,7 @@ export default function MiniDrawer() {
                         key={subItem.name}
                         component={Link}
                         to={subItem.link}
+                        className="text-decoration-none"
                       >
                         <ListItem button className={classes.nested}>
                           <ListItemIcon>
@@ -370,6 +366,9 @@ export default function MiniDrawer() {
       >
         <div className={classes.drawerHeader} />
         <Switch>
+          <Route exact path="/login">
+            <SignIn />
+          </Route>
           <Route exact path="/">
             <Dashboard />
           </Route>
