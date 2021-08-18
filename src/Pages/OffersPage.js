@@ -110,7 +110,6 @@ const Step1 = () => {
 };
 
 const Step2 = () => {
-  const classes = useStyles();
   const [radioSelection, setRadio] = React.useState("Draft");
   const [chechBox, setCheckBox] = React.useState({
     box1: false,
@@ -223,8 +222,6 @@ const Step2 = () => {
 };
 
 const Step3 = () => {
-  const classes = useStyles();
-
   const [hotelList, setHotelList] = React.useState([
     {
       name: "Standard King Room (1 adult (Aged 13 or more at checkout) + 1 baby (0 - 23 months old))",
