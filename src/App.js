@@ -6,8 +6,12 @@ import { Sidebar } from "./Components";
 
 const MainWrapper = () => {
   return (
-    <div className="row col-12" style={{ height: "100vh" }}>
-      <Sidebar />
+    <div
+      className="row col-12"
+      style={{ height: "100vh" }}
+      className="bg-danger"
+    >
+      {/* <Sidebar /> */}
     </div>
   );
 };
