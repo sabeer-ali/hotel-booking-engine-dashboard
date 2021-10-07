@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Drawer, Link as RouterLink } from "@material-ui/core";
@@ -44,7 +44,11 @@ import {
   AvailabilityPage,
   OffersPage,
   ExtrasPage,
+  RegisterPage,
+  HotelListingPage,
 } from "../Pages";
+
+import { useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -52,40 +56,6 @@ const Dashboard = () => {
   return (
     <div>
       <h3>Dashboard</h3>
-    </div>
-  );
-};
-
-const Hotels = () => {
-  return (
-    <div>
-      <h3>Hotels</h3>
-      <h3>Hotels</h3>
-      <h3>Hotels</h3>
-      <h3>Hotels</h3>
-      <h3>Hotels</h3>
-      <h3>Hotels</h3>
-      <h3>Hotels</h3>
-      <h3>Hotels</h3>
-      <h3>Hotels</h3>
-      <h3>Hotels</h3>
-      <h3>Hotels</h3>
-      <h3>Hotels</h3>
-    </div>
-  );
-};
-
-const Rooms = () => {
-  return (
-    <div>
-      <h3>Rooms</h3>
-      <h3>Rooms</h3>
-      <h3>Rooms</h3>
-      <h3>Rooms</h3>
-      <h3>Rooms</h3>
-      <h3>Rooms</h3>
-      <h3>Rooms</h3>
-      <h3>Rooms</h3>
     </div>
   );
 };
@@ -150,38 +120,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// let SidebarList = [
-//   {
-//     name: "Dashboard",
-//     icon: () => <DashboardIcon />,
-//     link: "/",
-//     haveChild: false,
-//   },
-//   {
-//     name: "Hotel Info",
-//     icon: () => <HotelIcon />,
-//     link: "/hotels",
-//     isExpand: false,
-//     haveChild: true,
-//     section: [{ name: "Room Types" }],
-//   },
-//   {
-//     name: "Hotel Room",
-//     icon: () => <HotelIcon />,
-//     haveChild: false,
-//     link: "/rooms",
-//   },
-// ];
-
 export default function MiniDrawer() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [showHeader, setShowHeader] = React.useState(true);
+
   const [SidebarList, setSidebarList] = React.useState([
     {
       name: "Dashboard",
       icon: () => <DashboardIcon />,
-      link: "/",
+      link: "/dashboard",
       haveChild: false,
     },
     {
@@ -193,7 +142,7 @@ export default function MiniDrawer() {
       section: [
         {
           name: "Room Types",
-          link: "/hotels/roomTypes",
+          link: "/room-types",
           icon: () => <HomeWorkIcon />,
         },
         {
@@ -266,6 +215,28 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
+  const location = useLocation();
+
+  console.log("location ==>", location);
+  const firstLetterCapitalize = (value) => {
+    if (value) {
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    } else {
+      return "";
+    }
+  };
+
+  useEffect(() => {
+    if (location.pathname === "/hotel-list" || location.pathname === "/") {
+      setShowHeader(false);
+    } else setShowHeader(true);
+  }, []);
+
+  const headerName =
+    firstLetterCapitalize(location.pathname.replace("/", "").split("-")[0]) +
+    " " +
+    firstLetterCapitalize(location.pathname.replace("/", "").split("-")[1]);
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -276,103 +247,115 @@ export default function MiniDrawer() {
         })}
       >
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
-          >
-            <MenuIcon />
-          </IconButton>
+          {showHeader ? (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              className={clsx(classes.menuButton, open && classes.hide)}
+            >
+              <MenuIcon />
+            </IconButton>
+          ) : null}
           <Typography variant="h6" noWrap>
-            Dashboard
+            {headerName}
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          {SidebarList.map((item, index) => (
-            <>
-              <ListItem
-                button
-                onClick={() => handleExpand(index)}
-                key={item.name}
-                component={Link}
-                to={!item.haveChild && item.link}
-              >
-                <ListItemIcon>
-                  <item.icon />
-                </ListItemIcon>
-                <ListItemText primary={item.name} />
-                {item.haveChild ? (
-                  item.isExpand ? (
-                    <ExpandLess />
-                  ) : (
-                    <ExpandMore />
-                  )
-                ) : null}
-              </ListItem>
+      {showHeader ? (
+        <>
+          <Drawer
+            className={classes.drawer}
+            variant="persistent"
+            anchor="left"
+            open={open}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <div className={classes.drawerHeader}>
+              <IconButton onClick={handleDrawerClose}>
+                {theme.direction === "ltr" ? (
+                  <ChevronLeftIcon />
+                ) : (
+                  <ChevronRightIcon />
+                )}
+              </IconButton>
+            </div>
+            <Divider />
+            <List>
+              {SidebarList.map((item, index) => (
+                <>
+                  <ListItem
+                    button
+                    onClick={() => handleExpand(index)}
+                    key={item.name}
+                    component={Link}
+                    to={!item.haveChild && item.link}
+                  >
+                    <ListItemIcon>
+                      <item.icon />
+                    </ListItemIcon>
+                    <ListItemText primary={item.name} />
+                    {item.haveChild ? (
+                      item.isExpand ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )
+                    ) : null}
+                  </ListItem>
 
-              <Collapse in={item.isExpand} timeout="auto" unmountOnExit>
-                {item.haveChild && item.section.length
-                  ? item.section.map((subItem, index) => (
-                      <List
-                        component="div"
-                        disablePadding
-                        key={subItem.name}
-                        component={Link}
-                        to={subItem.link}
-                        className="text-decoration-none"
-                      >
-                        <ListItem button className={classes.nested}>
-                          <ListItemIcon>
-                            {subItem.icon ? <subItem.icon /> : null}
-                          </ListItemIcon>
-                          <ListItemText primary={subItem.name} />
-                        </ListItem>
-                      </List>
-                    ))
-                  : null}
-              </Collapse>
-            </>
-          ))}
-        </List>
-        <Divider />
-      </Drawer>
+                  <Collapse in={item.isExpand} timeout="auto" unmountOnExit>
+                    {item.haveChild && item.section.length
+                      ? item.section.map((subItem, index) => (
+                          <List
+                            component="div"
+                            disablePadding
+                            key={subItem.name}
+                            component={Link}
+                            to={subItem.link}
+                            className="text-decoration-none"
+                          >
+                            <ListItem button className={classes.nested}>
+                              <ListItemIcon>
+                                {subItem.icon ? <subItem.icon /> : null}
+                              </ListItemIcon>
+                              <ListItemText primary={subItem.name} />
+                            </ListItem>
+                          </List>
+                        ))
+                      : null}
+                  </Collapse>
+                </>
+              ))}
+            </List>
+            <Divider />
+          </Drawer>
+        </>
+      ) : null}
 
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: open,
         })}
       >
-        <div className={classes.drawerHeader} />
+        {showHeader && <div className={classes.drawerHeader} />}
         <Switch>
-          <Route exact path="/login">
+          <Route exact path="/">
             <SignIn />
           </Route>
-          <Route exact path="/">
+          <Route path="/register">
+            <RegisterPage />
+          </Route>
+          <Route path="/hotel-list">
+            <HotelListingPage />
+          </Route>
+          <Route path="/dashboard">
             <Dashboard />
           </Route>
-          <Route path="/hotels/roomTypes">
+          <Route path="/room-types">
             <HotelsRoomTypes />
           </Route>
           <Route path="/hotels/room">

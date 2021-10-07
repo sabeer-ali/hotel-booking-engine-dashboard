@@ -21,35 +21,49 @@ import SingleBedIcon from "@material-ui/icons/SingleBed";
 import KingBedIcon from "@material-ui/icons/KingBed";
 
 import RoomTypes from "../mocData/roomTypes";
-
-const rows = RoomTypes;
-
-const columns = [
-  { field: "id", headerName: "ID", width: 100 },
-  {
-    field: "roomType",
-    headerName: "Room Type",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "bedSize",
-    headerName: "Bed Size",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "occupancy",
-    headerName: "Occupancy",
-    // type: "number",
-    width: 200,
-    editable: true,
-  },
-];
+import { CommonService } from "../Services/Services";
+import { HOTEL_ROOM } from "../Services/Urls";
+import { useLocation } from "react-router-dom";
+import { getLocalData } from "../Utils/localStore";
+// react Select
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
+import Bike from "../assets/bike.jpg";
 
 const BedLists = ({ handleChange, list }) => {
+  const animatedComponents = makeAnimated();
+  const options = [
+    {
+      value: "chocolate 1",
+      label: (
+        <div>
+          <img src={Bike} height="30px" width="30px" />
+          Chocolate{" "}
+        </div>
+      ),
+    },
+    {
+      value: "chocolate 2",
+      label: (
+        <div>
+          <img src={Bike} height="30px" width="30px" />
+          Chocolate{" "}
+        </div>
+      ),
+    },
+    {
+      value: "chocolate 3",
+      label: (
+        <div>
+          <img src={Bike} height="30px" width="30px" />
+          Chocolate{" "}
+        </div>
+      ),
+    },
+  ];
   return (
-    <>
+    <div className="">
+      {/* <Select options={options} isMulti components={animatedComponents} /> */}
       {list.map((items, index) => (
         <FormGroup row style={{ alignItems: "center" }} key={index}>
           <FormControlLabel
@@ -71,7 +85,7 @@ const BedLists = ({ handleChange, list }) => {
           )}
         </FormGroup>
       ))}
-    </>
+    </div>
   );
 };
 
@@ -116,6 +130,7 @@ const getModalStyle = () => {
 
 const HotelsRoomTypes = () => {
   const classes = useStyles();
+
   const [openModal, setOpenModal] = React.useState(false);
   const [bedList, setBedList] = React.useState([
     { option: ["single", "single", "single"], isChecheked: false },
@@ -126,6 +141,28 @@ const HotelsRoomTypes = () => {
     { option: ["single"], isChecheked: false },
   ]);
 
+  const [roomTypeList, setRoomTypeList] = React.useState([]);
+  const [selectedHotel, setSelectedHotel] = React.useState(null);
+
+  React.useEffect(() => {
+    getRoomList();
+  }, []);
+
+  const getRoomList = () => {
+    getLocalData("selected_hotel").then((res, err) => {
+      console.log("location", res.data, err);
+      setSelectedHotel(res.data);
+      CommonService.get(`${HOTEL_ROOM}/${res.data.hotel_id}`, (res, err) => {
+        console.log("Res in H Room List", res, err);
+        if (res !== null) setRoomTypeList(res.data);
+      });
+    });
+  };
+
+  const saveRoomData = () => {
+    CommonService.post(`${HOTEL_ROOM}/${selectedHotel.hotel_id}`);
+  };
+
   const handleModal = (value) => {
     if (value !== undefined || value !== null) {
       setOpenModal(value);
@@ -134,7 +171,7 @@ const HotelsRoomTypes = () => {
     }
   };
 
-  const handleChange = (index) => {
+  const handleBedChange = (index) => {
     let tempBedList = [...bedList];
     tempBedList[index].isChecheked = !tempBedList[index].isChecheked;
     setBedList(tempBedList);
@@ -147,7 +184,7 @@ const HotelsRoomTypes = () => {
       </Typography>
       <Divider />
       <Grid id="simple-modal-description">
-        <form className={classes.root} noValidate autoComplete="off">
+        <div className={classes.root} noValidate autoComplete="off">
           <Grid>
             <Grid style={{ margin: "20px 0" }}>
               <TextField
@@ -157,7 +194,7 @@ const HotelsRoomTypes = () => {
                 style={{ width: "100%" }}
               />
             </Grid>
-            <BedLists handleChange={handleChange} list={bedList} />
+            <BedLists handleChange={handleBedChange} list={bedList} />
             <Grid>
               <TextField
                 id="filled-basic"
@@ -173,7 +210,7 @@ const HotelsRoomTypes = () => {
               Submit
             </Button>
           </Grid>
-        </form>
+        </div>
       </Grid>
     </div>
   );
@@ -185,17 +222,29 @@ const HotelsRoomTypes = () => {
           Add Room Type
         </Button>
       </Grid>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={10}
-        checkboxSelection={false}
-        disableSelectionOnClick
-        disableColumnFilter
-        disableColumnMenu
-        filterMode={false}
-        density="standard"
-      />
+
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Room Name</th>
+            <th scope="col">Number Of Rooms</th>
+            <th scope="col">Area Sq Mtr</th>
+            <th scope="col">Room Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {roomTypeList.length
+            ? roomTypeList.map((item) => (
+                <tr className="" style={{ padding: "2em 0" }}>
+                  <td>{item.room_name}</td>
+                  <td>{item.num_rooms}</td>
+                  <td>{item.area_sqmtr}</td>
+                  <td>{item.room_type}</td>
+                </tr>
+              ))
+            : null}
+        </tbody>
+      </table>
       <Modal
         open={openModal}
         onClose={() => handleModal(false)}
